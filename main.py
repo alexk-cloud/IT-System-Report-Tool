@@ -15,6 +15,7 @@ def get_system_info():
     
     info["# CPU Cores"] = psutil.cpu_count(logical=False)
     info["# CPU Threads"] = psutil.cpu_count(logical=True)
+    info["CPU Usage (%)"] = psutil.cpu_percent(interval=1)
 
     info["Total RAM (GB)"] = round(mem.total / (1024**3), 2)
     info["Available RAM (GB)"] = round(mem.available / (1024**3), 2)
@@ -41,3 +42,16 @@ def ping_test(host="8.8.8.8"):
     except subprocess.CalledProcessError as e:
         print(f"Ping test failed with exception {e.returncode}")
         print(f"Error output: {e.stderr}")
+
+def get_top_processes():
+    processes = []
+    
+    for p in psutil.process_iter(["pid", "name", "memory_percent"]):
+        try:
+            processes.append(p.info)
+
+        except (psutil.NoSuchProcess, psutil.ZombieProcess, psutil.AccessDenied):
+            pass
+    
+    processes = sorted(processes, key=lambda x: x["memory_percent"], reverse=True)
+    return processes[:5]
