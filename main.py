@@ -73,10 +73,10 @@ def get_top_processes():
     return processes[:5]
 
 def make_txt(system_info, ping_info, top_processes):
-    info = system_info["System Name"]
+    sys_name = system_info["System Name"]
     now = datetime.now()
 
-    filename = f"{info}_Report_{now.strftime("%Y-%m-%d_%H-%M-%S")}.txt"
+    filename = f"{sys_name}_Report_{now.strftime("%Y-%m-%d_%H-%M-%S")}.txt"
 
     with open(filename, "w") as f:
         f.write("*** SYSTEM INFO ***\n")
@@ -94,3 +94,27 @@ def make_txt(system_info, ping_info, top_processes):
 
         for p in top_processes:
             f.write(f"{p["name"]} ({p["pid"]}): {p["memory_percent"]:5.2f}%\n")
+
+def make_csv(system_info, top_processes):
+    sys_name = system_info["System Name"]
+    now = datetime.now()
+
+    filename = f"{sys_name}_Summary_{now.strftime("%Y-%m-%d_%H-%M-%S")}.csv"
+
+    with open(filename, "w") as f:
+        headers = ",".join(system_info.keys())
+        values = ",".join(str(v) for v in system_info.values())
+        processes = ",".join(p["name"] for p in top_processes)
+        usage_percents = ",".join(str(round(p["memory_percent"], 2)) for p in top_processes)
+
+        f.write(f"{headers}\n")
+        f.write(f"{values}\n")
+
+        f.write("\nTOP PROCESSES BY MEM USAGE (%)\n")    
+        f.write(f"{usage_percents}\n")
+        f.write(f"{processes}\n")
+
+# main program            
+info = get_system_info()
+procs = get_top_processes()
+make_csv(info, procs)
