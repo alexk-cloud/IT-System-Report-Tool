@@ -114,7 +114,13 @@ def make_csv(system_info, top_processes):
         f.write(f"{usage_percents}\n")
         f.write(f"{processes}\n")
 
-# main program            
-info = get_system_info()
-procs = get_top_processes()
-make_csv(info, procs)
+def main():
+    info = get_system_info()
+    ping = ping_test()
+    procs = get_top_processes()
+
+    make_txt(info, ping, procs)
+    make_csv(info, procs)
+
+if __name__ == "__main__":
+    main()
