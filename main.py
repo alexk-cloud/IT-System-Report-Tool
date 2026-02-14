@@ -29,21 +29,32 @@ def get_system_info():
     return info
 
 def ping_test(host="8.8.8.8"):
+    os = platform.system()
     result = None
 
     try:
-        output = subprocess.run(
-            ["ping", host, "-n", "3"],
-            capture_output=True,
-            text=True
-        )
+        if os == "Windows":
+            output = subprocess.run(
+                ["ping", host, "-n", "3"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            
+        else:
+            output = subprocess.run(
+                ["ping", "-c", "3", host],
+                capture_output=True,
+                text=True,
+                check=True
+            )
 
         result = output.stdout
-    
+
     except subprocess.CalledProcessError as e:
         result = (
-            f"Ping test failed with exception {e.returncode}"
-            f"Error output: {e.stderr}"
+            f"Ping test failed with exception {e.returncode}\n"
+            f"Error output: {e.stderr}\n"
         )
         
     return result
