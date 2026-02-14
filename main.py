@@ -2,6 +2,7 @@ import psutil
 import platform
 import socket
 import subprocess
+from datetime import datetime
 
 def get_system_info(): 
     info = {}
@@ -28,6 +29,8 @@ def get_system_info():
     return info
 
 def ping_test(host="8.8.8.8"):
+    result = None
+
     try:
         output = subprocess.run(
             ["ping", host, "-n", "3"],
@@ -35,13 +38,15 @@ def ping_test(host="8.8.8.8"):
             text=True
         )
 
-        print(f"Ping Test with {host}")
-        print('*' * 50)
-        print(output.stdout)
+        result = output.stdout
     
     except subprocess.CalledProcessError as e:
-        print(f"Ping test failed with exception {e.returncode}")
-        print(f"Error output: {e.stderr}")
+        result = (
+            f"Ping test failed with exception {e.returncode}"
+            f"Error output: {e.stderr}"
+        )
+        
+    return result
 
 def get_top_processes():
     processes = []
@@ -55,3 +60,26 @@ def get_top_processes():
     
     processes = sorted(processes, key=lambda x: x["memory_percent"], reverse=True)
     return processes[:5]
+
+def make_txt(system_info, ping_info, top_processes):
+    info = system_info["System Name"]
+    now = datetime.now()
+
+    filename = f"{info}_Report_{now.strftime("%Y-%m-%d_%H-%M-%S")}.txt"
+
+    with open(filename, "w") as f:
+        f.write("*** SYSTEM INFO ***\n")
+
+        for key, value in system_info.items():
+            f.write(f"{key}: {value}\n")
+        
+        f.write("\n")
+        f.write("*** PING TEST ***")
+        f.write(ping_info)
+
+        f.write("\n")
+        f.write("*** TOP 5 PROCESSES BY MEMORY USAGE (%) ***")
+        f.write("\n")
+
+        for p in top_processes:
+            f.write(f"{p["name"]} ({p["pid"]}): {p["memory_percent"]:5.2f}%\n")
