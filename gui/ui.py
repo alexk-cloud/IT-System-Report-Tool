@@ -9,8 +9,6 @@ def browse_directory():
 	return filedialog.askdirectory()
 
 def shorten_path(path):
-	max = 50;
-
 	if len(path) >= 50:
 		return path[:25] + "..." + path[-20:]
 	
