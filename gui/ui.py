@@ -5,9 +5,19 @@ from system_report import *
 def run_gui():
     root = Tk()
 
+    window_width = 600
+    window_height = 400
+
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    x = (screen_width - window_width) // 2
+    y = (screen_height - window_height) // 2
+
     root.title("System Report Tool")
-    root.geometry("600x400")
+    root.geometry(f"{window_width}x{window_height}+{x}+{y}")
     root.resizable(False, False)
+    
     root.configure(bg="#000")
 
     title = StringVar(value="System Report Tool")
