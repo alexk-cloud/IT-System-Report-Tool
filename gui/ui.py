@@ -48,19 +48,39 @@ def run_gui():
 	dir_label = Label(root, textvariable=folder_path, bg="#fff", fg="#000",
 			font=("Arial", 10), width=50, height=2)
 	
-	gen_button = Button(root, text="GENERATE", bg="lime", fg="#fff", 
-					font=("Arial", 20, "bold"), width=15, height=1)
-	
 	def handle_browse():
 		path = browse_directory()
 
 		if path:
 			folder_path.set(path)
 			print(f"Selected path: {path}")
-	
+
 	dir_button = Button(text="Browse directory", font=("Arial", 12), command=handle_browse)
 	dir_button.config(relief="flat")
 
+	def handle_gen():
+		selected_dir = folder_path.get()
+		
+		if not selected_dir:
+			return
+		
+		info = get_system_info()
+		ping = ping_test()
+		procs = get_top_processes()
+
+		file_type = choice.get()
+
+		if file_type == ".txt":
+			make_txt(info, ping, procs, output_dir=selected_dir)
+			print(f".txt report generated at {selected_dir}")
+		else:
+			make_csv(info, procs, selected_dir)
+			print(f".csv summary generated at {selected_dir}")
+	
+	gen_button = Button(root, text="GENERATE", bg="lime", fg="#fff", 
+					font=("Arial", 20, "bold"), width=15, height=1)
+	gen_button.config(command=handle_gen)
+	
 	title_label.pack(fill="x", padx=10, pady=10)
 	select_label.pack()
 	menu.pack(pady=10)
@@ -69,8 +89,5 @@ def run_gui():
 	dir_button.pack(pady=10)
 	gen_button.pack(padx=5, pady=(10, 0))
 	
-	# bind to generate later
-	#root.bind("<Return>", None)
-
 	root.mainloop()
 

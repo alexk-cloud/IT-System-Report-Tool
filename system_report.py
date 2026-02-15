@@ -2,6 +2,7 @@ import psutil
 import platform
 import socket
 import subprocess
+import os
 from datetime import datetime
 
 def get_system_info(): 
@@ -72,13 +73,14 @@ def get_top_processes():
     processes = sorted(processes, key=lambda x: x["memory_percent"], reverse=True)
     return processes[:5]
 
-def make_txt(system_info, ping_info, top_processes):
+def make_txt(system_info, ping_info, top_processes, output_dir="."):
     sys_name = system_info["System Name"]
     now = datetime.now()
 
     filename = f"{sys_name}_Report_{now.strftime("%Y-%m-%d_%H-%M-%S")}.txt"
+    filepath = os.path.join(output_dir, filename)
 
-    with open(filename, "w") as f:
+    with open(filepath, "w") as f:
         f.write("*** SYSTEM INFO ***\n")
 
         for key, value in system_info.items():
@@ -95,13 +97,14 @@ def make_txt(system_info, ping_info, top_processes):
         for p in top_processes:
             f.write(f"{p["name"]} ({p["pid"]}): {p["memory_percent"]:5.2f}%\n")
 
-def make_csv(system_info, top_processes):
+def make_csv(system_info, top_processes, output_dir="."):
     sys_name = system_info["System Name"]
     now = datetime.now()
 
     filename = f"{sys_name}_Summary_{now.strftime("%Y-%m-%d_%H-%M-%S")}.csv"
+    filepath = os.path.join(output_dir, filename)
 
-    with open(filename, "w") as f:
+    with open(filepath, "w") as f:
         headers = ",".join(system_info.keys())
         values = ",".join(str(v) for v in system_info.values())
         processes = ",".join(p["name"] for p in top_processes)
