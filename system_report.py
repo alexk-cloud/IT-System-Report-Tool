@@ -39,7 +39,8 @@ def ping_test(host="8.8.8.8"):
                 ["ping", host, "-n", "3"],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
+                creationflags=subprocess.CREATE_NO_WINDOW
             )
             
         else:
@@ -47,7 +48,8 @@ def ping_test(host="8.8.8.8"):
                 ["ping", "-c", "3", host],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
+                creationflags=subprocess.CREATE_NO_WINDOW
             )
 
         result = output.stdout
