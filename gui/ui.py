@@ -32,7 +32,8 @@ def run_gui():
     choice = StringVar()
     options = [".txt",".csv"]
     choice.set(".txt")
-    menu = OptionMenu(root, choice, *options)
+    menu = ttk.Combobox(root, textvariable=choice, state="readonly")
+    menu["values"] = options
 
     title_label.pack(fill="x", padx=10, pady=10)
     select_label.pack()
