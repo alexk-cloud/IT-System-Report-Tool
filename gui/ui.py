@@ -1,3 +1,5 @@
+import os
+
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
@@ -5,6 +7,14 @@ from system_report import *
 
 def browse_directory():
 	return filedialog.askdirectory()
+
+def shorten_path(path):
+	max = 50;
+
+	if len(path) >= 50:
+		return path[:25] + "..." + path[-20:]
+	
+	return path
 
 def run_gui():
 	root = Tk()
@@ -57,8 +67,7 @@ def run_gui():
 		path = browse_directory()
 
 		if path:
-			folder_path.set(path)
-			print(f"Selected path: {path}")
+			folder_path.set(shorten_path(path))
 
 	dir_button = Button(text="Browse directory", font=("Arial", 12), command=handle_browse)
 	dir_button.config(relief="flat")
@@ -71,6 +80,17 @@ def run_gui():
 			status_label.config(fg="red")
 			return
 		
+		try:
+			os.makedirs(selected_dir, exist_ok=True)
+		except PermissionError:
+			status_msg.set("Cannot create files: permission denied.")
+			status_label.config(fg="red")
+			return
+		except OSError as e:
+			status_msg.set(f"Error creating files: {e}")
+			status_label.config(fg="red")
+			return
+
 		info = get_system_info()
 		ping = ping_test()
 		procs = get_top_processes()
@@ -79,11 +99,11 @@ def run_gui():
 
 		if file_type == ".txt":
 			make_txt(info, ping, procs, output_dir=selected_dir)
-			status_msg.set(f".txt report generated at {selected_dir}.")
+			status_msg.set(f".txt report generated at {shorten_path(selected_dir)}.")
 			status_label.config(fg="lime")
 		else:
 			make_csv(info, procs, selected_dir)
-			status_msg.set(f".csv summary generated at {selected_dir}.")
+			status_msg.set(f".csv summary generated at {shorten_path(selected_dir)}.")
 			status_label.config(fg="lime")
 	
 	gen_button = Button(root, text="GENERATE", bg="lime", fg="#fff", 
