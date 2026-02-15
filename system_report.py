@@ -122,5 +122,4 @@ def main():
     make_txt(info, ping, procs)
     make_csv(info, procs)
 
-if __name__ == "__main__":
-    main()
+    print(".txt report and .csv summary generated.")
