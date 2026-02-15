@@ -48,6 +48,11 @@ def run_gui():
 	dir_label = Label(root, textvariable=folder_path, bg="#fff", fg="#000",
 			font=("Arial", 10), width=50, height=2)
 	
+	status_msg = StringVar()
+	status_label = Label(root, textvariable=status_msg, fg="#fff", bg="#000",
+			font=("Arial", 12))
+	status_label.pack(side="bottom", pady=10)
+	
 	def handle_browse():
 		path = browse_directory()
 
@@ -62,6 +67,8 @@ def run_gui():
 		selected_dir = folder_path.get()
 		
 		if not selected_dir:
+			status_msg.set("Please select a directory!")
+			status_label.config(fg="red")
 			return
 		
 		info = get_system_info()
@@ -72,10 +79,12 @@ def run_gui():
 
 		if file_type == ".txt":
 			make_txt(info, ping, procs, output_dir=selected_dir)
-			print(f".txt report generated at {selected_dir}")
+			status_msg.set(f".txt report generated at {selected_dir}.")
+			status_label.config(fg="lime")
 		else:
 			make_csv(info, procs, selected_dir)
-			print(f".csv summary generated at {selected_dir}")
+			status_msg.set(f".csv summary generated at {selected_dir}.")
+			status_label.config(fg="lime")
 	
 	gen_button = Button(root, text="GENERATE", bg="lime", fg="#fff", 
 					font=("Arial", 20, "bold"), width=15, height=1)
