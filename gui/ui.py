@@ -35,10 +35,14 @@ def run_gui():
     menu = ttk.Combobox(root, textvariable=choice, state="readonly")
     menu["values"] = options
 
+    button = Button(root, text="GENERATE", bg="lime", fg="#fff", 
+                    font=("Arial", 20, "bold"), width=15, height=2)
+    
     title_label.pack(fill="x", padx=10, pady=10)
     select_label.pack()
     menu.pack(pady=10)
-    
+    button.pack(padx=5, pady=(100, 0))
+
     # bind to generate later
     #root.bind("<Return>", None)
 
