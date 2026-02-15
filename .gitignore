@@ -1,3 +1,7 @@
 gui/__pycache__/__init__.cpython-314.pyc
 gui/__pycache__/ui.cpython-314.pyc
 __pycache__/system_report.cpython-314.pyc
+build/
+dist/
+*.spec
+__pycache__/
